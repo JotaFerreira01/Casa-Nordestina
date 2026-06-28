@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casa Nordestina</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+body{background:#f8f1e5;padding:40px;}
+
+.container{max-width:900px;margin:auto;}
+
+.topo{
+    background:#2d6a4f;color:white;padding:30px;
+    border-radius:15px 15px 0 0;text-align:center;
+}
+
+.caixa{
+    background:white;padding:30px;
+    border-radius:0 0 15px 15px;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+h2{color:#2d6a4f;margin-bottom:15px;}
+
+input,select{
+    width:100%;padding:12px;margin-bottom:12px;
+    border:1px solid #ccc;border-radius:8px;
+}
+
+button{
+    width:100%;padding:14px;
+    background:#2d6a4f;color:white;
+    border:none;border-radius:8px;
+}
+
+.lista{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:20px;
+}
+
+.produto{
+    background:#fffdf8;
+    border-left:8px solid #e67e22;
+    padding:18px;border-radius:12px;
+}
+
+.preco-grande{
+    font-size:18px;
+    color:#2d6a4f;
+    font-weight:600;
+}
+
+.preco-pequeno{
+    font-size:13px;
+    color:#777;
+}
+
+.excluir{
+    display:inline-block;margin-top:15px;
+    background:#c0392b;color:white;
+    padding:10px 15px;border-radius:6px;
+    text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="topo">
+<h1>🌵 Casa Nordestina</h1>
+<p>Controle de Estoque</p>
+</div>
+
+<div class="caixa">
+
+<h2>📦 Cadastrar Produto</h2>
+
+<form action="/adicionar" method="post">
+
+<input type="text" name="nome" placeholder="Nome" required>
+<input type="text" name="categoria" placeholder="Categoria" required>
+<input type="number" name="quantidade" placeholder="Estoque em kg" required>
+<input type="number" step="0.01" name="preco" placeholder="Preço" required>
+
+<select name="tipo_preco" required>
+    <option value="100g">Preço por 100g</option>
+    <option value="kg">Preço por kg</option>
+</select>
+
+<button type="submit">Salvar</button>
+
+</form>
+
+<h2>🛒 Produtos ({{ produtos|length }})</h2>
+
+<div class="lista">
+
+{% for produto in produtos %}
+
+<div class="produto">
+
+<h3>{{ produto.nome }}</h3>
+
+<p><strong>Categoria:</strong> {{ produto.categoria }}</p>
+
+<p><strong>Estoque:</strong> {{ produto.quantidade }} kg</p>
+
+<div style="margin-top:10px;">
+
+<strong>Preço:</strong>
+
+{% if produto.tipo_preco == "100g" %}
+
+<div class="preco-grande">
+💥 R$ {{ "%.2f"|format(produto.preco|float) }} por 100g
+</div>
+
+<div class="preco-pequeno">
+(~ R$ {{ "%.2f"|format(produto.preco|float * 10) }} por kg)
+</div>
+
+{% else %}
+
+<div class="preco-grande">
+💥 R$ {{ "%.2f"|format(produto.preco|float) }} por kg
+</div>
+
+<div class="preco-pequeno">
+(~ R$ {{ "%.2f"|format(produto.preco|float / 10) }} por 100g)
+</div>
+
+{% endif %}
+
+</div>
+
+<a class="excluir" href="/excluir/{{ produto.id }}">Excluir</a>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
